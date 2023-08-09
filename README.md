@@ -1,2 +1,3 @@
 # OS_Corretiva_Fluig
-OS Ordem de Serviço Corretiva Fluig
+
+Ordem de Serviço Corretiva eletrônica desenvolvida na plataforma Fluig
