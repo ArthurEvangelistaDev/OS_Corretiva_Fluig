@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link type="text/css" rel="stylesheet" href="/style-guide/css/fluig-style-guide.min.css"/>
+	<script type="text/javascript" src="/portal/resources/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/portal/resources/js/mustache/mustache-min.js"></script>
+	<script type="text/javascript" src="/style-guide/js/fluig-style-guide.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/webdesk/vcXMLRPC.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/javascript" src="js/selectedItem.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script>
+	<script language="javascript"> function disablePullToRefresh(){return true; }</script>
+</head>
+<body>
+<div class="fluig-style-guide">
+<form name="form" role="form">
+
+	<script language="javascript">
+		function showCamera(param) { 
+			JSInterface.showCamera(param);
+		}
+	</script>
+
+	<ul class="nav nav-tabs clearfix" role="tablist">
+	    <li class="active"><a>OS</a></li>
+	    <li><a>SERVIÇO</a></li>
+	    <li><a>PEÇA</a></li>
+	</ul>
+
+	<div class="panel panel-primary OS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Histórico HHT - Mão de obra</h3>
+    </div>
+    <div class="panel-body">
+    
+		<div class="row">
+		
+			<div class="form-group">
+				<table id="TABELA_MAODEOBRA" class="table" cellspacing="0" tablename="TABELA_MAODEOBRA" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_MAODEOBRA')">
+					<thead>
+						<tr class="tableHeadRow">
+							<th class="tableColumn"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="fs-v-align-middle col-md-12 col-sm-12">
+								<div class="form-group">
+									<div class="row">
+									
+										<div class="form-group col-xs-12 col-md-4">
+											<label for="MAODEOBRANOME">Nome:</label>
+											<input
+											    type="zoom"
+											    id = "MAODEOBRANOME"
+											    name="MAODEOBRANOME"
+											    class="form-control"
+											    value=""
+											    data-zoom="{
+											        'displayKey':'NOME',
+											        'datasetId':'ds_OSE_Mao_de_Obra',
+											        'placeholder':'Selecione...',
+											        'fields':[
+											            {
+											               'field':'NOME',
+											               'label':'NOME',
+											              'standard':'true'
+											            }
+											        ]
+											     }"
+											/>
+										</div>
+										
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="MAODEOBRAHORAINICIO">Data/Hora Início:</label>
+											<input type="text" id="MAODEOBRAHORAINICIO" name="MAODEOBRAHORAINICIO" value="" class="form-control" readonly="readonly">
+										</div>
+											
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="MAODEOBRAHORAFIM">Data/Hora Fim:</label>
+											<input type="text" id="MAODEOBRAHORAFIM" name="MAODEOBRAHORAFIM" value="" class="form-control" readonly="readonly">
+										</div>
+										
+										<div class="form-group col-xs-12 col-md-2">
+											<label for="MAODEOBRAHORASTOTAIS">Horas Totais:</label>
+											<input type="text" id="MAODEOBRAHORASTOTAIS" name="MAODEOBRAHORASTOTAIS" value="" class="form-control" readonly="readonly">
+										</div>
+										
+									</div>
+									
+									<div class="row">
+									
+										<div class="form-group col-xs-12 col-md-6">
+											<button type="button" class="btn btn-lg btn-primary btn-block" id="BOTAOINICIAROS" name="BOTAOINICIAROS" onclick="iniciaOS(this)">Iniciar OS</button>
+										</div>
+										<div class="form-group col-xs-12 col-md-6">
+											<button type="button" class="btn btn-lg btn-default btn-block" id="BOTAOPAUSAROS" name="BOTAOPAUSAROS" onclick="finalizaOS(this)">Pausar OS</button>
+										</div>
+							
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				    
+			<button type="button" class="btn btn-primary" name="TABELA_MAODEOBRA_BOTAO" id="TABELA_MAODEOBRA_BOTAO" onclick="addLinhaTabela('TABELA_MAODEOBRA')">Incluir Mão de Obra</button>
+			 	    
+			</div>
+			
+			<table id="MAODEOBRAHHT" style="display:none" class="table" cellspacing="0" tablename="MAODEOBRAHHT" noaddbutton="true" nodeletebutton="true">
+			<thead>
+				<tr class="tableHeadRow">
+					<th class="tableColumn"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+				<td class="fs-v-align-middle col-md-12 col-sm-12">
+				<div class="form-group">
+				<div class="row">
+					
+					<div class="form-group col-xs-3 col-md-3">
+						<input type="hidden" id="MAODEOBRANOMEHHT" name="MAODEOBRANOMEHHT" value="" class="form-control">
+					</div>
+					
+					<div class="form-group col-xs-3 col-md-3">
+						<input type="hidden" id="MAODEOBRAHORAINICIOHHT" name="MAODEOBRAHORAINICIOHHT" value="" class="form-control">
+					</div>
+					
+					<div class="form-group col-xs-3 col-md-3">
+						<input type="hidden" id="MAODEOBRAHORAFIMHHT" name="MAODEOBRAHORAFIMHHT" value="" class="form-control">
+					</div>
+					
+					<div class="form-group col-xs-3 col-md-3">
+						<input type="hidden" id="MAODEOBRAHORASTOTAISHHT" name="MAODEOBRAHORASTOTAISHHT" value="" class="form-control">
+					</div>
+				
+				</div>
+				</div>
+				</td>
+				</tr>
+			</tbody>
+			</table>
+			
+		</div>
+				
+    </div>
+	</div>
+
+	<div class="panel panel-primary OS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Dados do Equipamento</h3>
+    </div>
+    <div class="panel-body">
+		<div class="row">
+		
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="OBJETODEMANUTENCAO">Objeto de Manutenção:</label>
+				<input type="hidden" id="CHAPARESP" name="CHAPARESP" value="">
+				<input type="hidden" id="CODCFO" name="CODCFO" value="">
+				<input
+				    type="zoom"
+				    id = "OBJETODEMANUTENCAO"
+				    name="OBJETODEMANUTENCAO"
+				    class="form-control"
+				    value=""
+				    data-zoom="{
+				        'displayKey':'IDOBJOF',
+				        'datasetId':'ds_OSE_Objeto_de_Manutencao',
+				        'placeholder':'Selecione...',
+				        'fields':[
+				            {
+				               'field':'IDOBJOF',
+				               'label':'Objeto de Manutenção',
+				              'standard':'true'
+				            },
+				            {
+				            	'field':'SERIE',
+				            	'label':'Série'
+				            }
+				        ]
+				     }"
+				/>
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="SERIE">Série:</label>
+				<input type="text" id="SERIE" name="SERIE" value="" class="form-control" readonly="readonly">
+			</div>
+			
+		</div>
+
+		<div class="row">
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="STATUS">Status:</label>
+				<input type="hidden" id="CODSTATUS" name="CODSTATUS" value="">
+				<input type="text" id="STATUS" name="STATUS" value="" class="form-control" readonly="readonly">
+			</div>
+		
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="CODMODELO">Cod. Modelo:</label>
+				<input type="hidden" id="CODMODELO" name="CODMODELO" value="">
+				<input type="text" id="MODELO" name="MODELO" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="CODSUBMODELO">Cod. SubModelo:</label>
+				<input type="hidden" id="CODSUBMODELO" name="CODSUBMODELO" value="">
+				<input type="text" id="SUBMODELO" name="SUBMODELO" value="" class="form-control" readonly="readonly">
+			</div>
+			
+		</div>
+
+		<div class="row">
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="CODTIPOOBJ">Cod. Tipo Objeto:</label>
+				<input type="hidden" id="CODTIPOOBJ" name="CODTIPOOBJ" value="">
+				<input type="text" id="TIPOOBJ" name="TIPOOBJ" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="FABRICANTE">Fabricante:</label>
+				<input type="hidden" name="CODFABRICANTE" id="CODFABRICANTE">
+				<input type="text" id="FABRICANTE" name="FABRICANTE" value="" class="form-control" readonly="readonly">
+			</div>
+		
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="HORIMETROMEDIDOR">Horimetro Medidor:</label>
+				<input type="number" id="HORIMETROMEDIDOR" name="HORIMETROMEDIDOR" value="" min="0" class="form-control">
+				<input type="hidden" id="HORIMETROMAXIMO" name="HORIMETROMAXIMO">
+				<input type="hidden" id="HORIMETROACUMULADO" name="HORIMETROACUMULADO">
+				<input type="hidden" id="DATACOLETA" name="DATACOLETA">
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary OS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Classificação</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="CLASSEDAMANUTENCAO">Classe da Manutenção:</label>
+				<input type="hidden" id="IDCLASSEDAMANUTENCAO" name="IDCLASSEDAMANUTENCAO" value="">
+				<input
+				    type="zoom"
+				    id = "CLASSEDAMANUTENCAO"
+				    name="CLASSEDAMANUTENCAO"
+				    class="form-control"
+				    value=""
+				    data-zoom="{
+				        'displayKey':'DSCCLASSMOV',
+				        'datasetId':'ds_OSE_Classe_de_Manutencao_Compra',
+				        'placeholder':'Selecione...',
+				        'fields':[
+				            {
+				               'field':'CODCLASSMOV',
+				               'label':'Código',
+				              'standard':'true'
+				            },
+				            {
+				            	'field':'DSCCLASSMOV',
+				            	'label':'Classificação da Manutenção'
+				            }
+				        ]
+				     }"
+				/>
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="CLASSEDECOMPRA">Classe de Compra:</label>
+				<input type="hidden" id="IDCLASSEDECOMPRA" name="IDCLASSEDECOMPRA" value="">
+				<input type="text" id="CLASSEDECOMPRA" name="CLASSEDECOMPRA" value="" class="form-control" readonly="readonly">
+			</div>
+			
+		</div>
+		
+    </div>
+	</div>
+	
+	<div class="panel panel-primary OS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Detalhes Técnicos:</h3>
+    </div>
+    <div class="panel-body">
+		
+		<div class="row">
+		
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="SERVICOASEREXECUTADO">Serviço a ser executado:</label>
+				<textarea id="SERVICOASEREXECUTADO" name="SERVICOASEREXECUTADO" value="" rows="2" class="form-control"></textarea>
+			</div>
+		
+			<div class="form-group col-xs-12 col-md-6">
+				<label for="SOLUCAO">Solução:</label>
+				<textarea id="SOLUCAO" name="SOLUCAO" value="" rows="2" class="form-control"></textarea>
+			</div>
+			
+		</div>
+		
+		<div class="row">
+
+			<div class="form-group col-xs-12 col-md-12">
+				<label>Fotos:</label>
+				<input type="button" class="form-control" id="DETALHESTECNICOS_BOTAO" value="Adicionar Fotos" onclick="showCamera();"/>
+			</div>
+		
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary OS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Dados Cadastrais</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="LOCALESTOQUE">Local de Estoque:</label>
+				<input type="hidden" id="CODLOCALESTOQUE" name="CODLOCALESTOQUE">
+				<input type="text" id="LOCALESTOQUE" name="LOCALESTOQUE" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="OSNUMEROMOV">Nº da OS TOTVS:</label>
+				<input type="text" id="OSNUMEROMOV" name="OSNUMEROMOV" value="" class="form-control" readonly="readonly">
+				<input type="hidden" id="OSIDMOV" name="OSIDMOV">
+			</div>
+		
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="FILIAL">Filial:</label>
+				<input type="hidden" id="CODFILIAL" name="CODFILIAL">
+				<input type="text" id="FILIAL" name="FILIAL" value="" class="form-control" readonly="readonly">
+			</div>
+		
+		</div>
+
+		<div class="row">
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="CENTRODECUSTO">Centro de Custo:</label>
+				<input type="hidden" id="CODCENTRODECUSTO" name="CODCENTRODECUSTO">
+				<input type="text" id="CENTRODECUSTO" name="CENTRODECUSTO" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="DEPARTAMENTO">Departamento:</label>
+				<input type="hidden" id="CODDEPARTAMENTO" name="CODDEPARTAMENTO">
+				<input type="text" id="DEPARTAMENTO" name="DEPARTAMENTO" value="" class="form-control" readonly="readonly">
+			</div>
+
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="LOCALIZACAO">Localização:</label>
+				<input type="hidden" id="CODLOCALIZACAO" name="CODLOCALIZACAO">
+				<input type="text" id="LOCALIZACAO" name="LOCALIZACAO" value="" class="form-control" readonly="readonly">
+			</div>
+		
+		</div>
+
+    </div>
+	</div>
+	 
+	<div class="panel panel-primary OS" id="DIVHITORICOANALISE">
+    <div class="panel-heading">
+        <h3 class="panel-title">Histórico de Análise de Manutenção</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+			
+			<div class="form-group col-xs-12 col-md-3">
+				<label for="DATAINICIOOS">Data Inicio OS:</label>
+				<input type="text" id="DATAINICIOOS" name="DATAINICIOOS" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-3">
+				<label for="HORASPREVISTASEXECUCAO">Horas previstas para execução:</label>
+				<input type="text" id="HORASPREVISTASEXECUCAO" name="HORASPREVISTASEXECUCAO" mask="#0:00" value="" class="form-control">
+			</div>
+			
+			
+			<div class="form-group col-xs-12 col-md-3">
+				<label for="TOTALHORASEXECUTADAS">Total de Horas Executadas:</label>
+				<input type="text" id="TOTALHORASEXECUTADAS" name="TOTALHORASEXECUTADAS" value="" class="form-control" readonly="readonly">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-3">
+				<label for="DATATERMINOOS">Data Termino OS:</label>
+				<input type="text" id="DATATERMINOOS" name="DATATERMINOOS" value="" class="form-control" readonly="readonly">
+			</div>
+		
+		</div>
+
+		<div class="row">
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="PRIMEIRAPREVLIBERACAO">1ª Previsão de Liberação:</label>
+				<input type="date" id="PRIMEIRAPREVLIBERACAO" name="PRIMEIRAPREVLIBERACAO" value="" class="form-control">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="SEGUNDAPREVLIBERACAO">2ª Previsão de Liberação:</label>
+				<input type="date" id="SEGUNDAPREVLIBERACAO" name="SEGUNDAPREVLIBERACAO" value="" class="form-control">
+			</div>
+			
+			<div class="form-group col-xs-12 col-md-4">
+				<label for="TERCEIRAPREVLIBERACAO">3ª Previsão de Liberação:</label>
+				<input type="date" id="TERCEIRAPREVLIBERACAO" name="TERCEIRAPREVLIBERACAO" value="" class="form-control">
+			</div>
+		
+		</div>
+		
+		<div class="row">
+		
+			<div class="form-group col-xs-12 col-md-12">
+				<label for="FOLLOWUP">Follow up:</label>
+				<textarea id="FOLLOWUP" name="FOLLOWUP" value="" rows="3" class="form-control"></textarea>
+			</div>
+		
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary OS" id="DIVHITORICOREQUISICOES">
+    <div class="panel-heading">
+        <h3 class="panel-title">Histórico de Requisições</h3>
+    </div>
+    <div class="panel-body">
+		
+		<input type="hidden" name="REQUISICOESPENDENTES" id="REQUISICOESPENDENTES">
+		
+		<div class="row">
+		
+			<div class="form-group">
+				<table id="TABELA_RMOS" class="table" cellspacing="0" tablename="TABELA_RMOS" noaddbutton="true" nodeletebutton="true">
+					<thead> 
+						<tr class="tableHeadRow">
+							<th class="tableColumn"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="fs-v-align-middle col-md-12 col-sm-12">
+								<div class="form-group">
+									<div class="row">
+	
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RMNUMEROMOV">RM:</label>
+											<input type="text" id="RMNUMEROMOV" name="RMNUMEROMOV" value="" class="form-control" readonly="readonly">
+											<input type="hidden" id="RMIDMOV" name="RMIDMOV">
+										</div>
+									
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RMSTATUS">Status:</label>
+											<input type="text" id="RMSTATUS" name="RMSTATUS" value="" class="form-control" readonly="readonly">
+										</div>
+									
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RMAPROVACAO">Aprovação:</label>
+											<input type="text" id="RMAPROVACAO" name="RMAPROVACAO" value="" class="form-control" readonly="readonly">
+										</div>
+	
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RMCONSULTARAPROVACAO">Consultar Aprovação:</label>
+											<input type="button" class="form-control" id="RMCONSULTARAPROVACAO" value="Consultar" onclick="consultaRMdaOS('TABELA_RMOS')">
+										</div>
+										
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+
+		<div class="row">
+			
+			<div class="form-group">
+				<table id="TABELA_RSOS" class="table" cellspacing="0" tablename="TABELA_RSOS" noaddbutton="true" nodeletebutton="true">
+					<thead> 
+						<tr class="tableHeadRow">
+							<th class="tableColumn"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="fs-v-align-middle col-md-12 col-sm-12">
+								<div class="form-group">
+									<div class="row">
+	
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RSNUMEROMOV">RS:</label>
+											<input type="text" id="RSNUMEROMOV" name="RSNUMEROMOV" value="" class="form-control" readonly="readonly">
+											<input type="hidden" id="RSIDMOV" name="RSIDMOV">
+										</div>
+									
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RSSTATUS">Status:</label>
+											<input type="text" id="RSSTATUS" name="RSSTATUS" value="" class="form-control" readonly="readonly">
+										</div>
+									
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RSAPROVACAO">Aprovação:</label>
+											<input type="text" id="RSAPROVACAO" name="RSAPROVACAO" value="" class="form-control" readonly="readonly">
+										</div>
+									
+										<div class="form-group col-xs-12 col-md-3">
+											<label for="RSCONSULTARAPROVACAO">Consultar Aprovação:</label>
+											<input type="button" class="form-control" id="RSCONSULTARAPROVACAO" value="Consultar" onclick="consultaRMdaOS('TABELA_RSOS')">
+										</div>
+										
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		
+		</div>
+
+    </div>
+	</div>
+	
+	<!-- ========================================================================================================================== -->
+
+	<div class="panel panel-primary PECAS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Peças Originais</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_PECAORIGINAL" class="table" cellspacing="0" tablename="TABELA_PECAORIGINAL" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_PECAORIGINAL')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-6">
+												<label for="CODIGOPECAORIGINAL">Peça:</label>
+												<input type="hidden" id="IDPRDPECAORIGINAL" name="IDPRDPECAORIGINAL" value="">
+												<input type="hidden" id="ULTIMOPRECOPECAORIGINAL" name="ULTIMOPRECOPECAORIGINAL" value="">
+												<input
+												    type="zoom"
+												    id = "CODIGOPECAORIGINAL"
+												    name="CODIGOPECAORIGINAL"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'CODIGOPRD',
+												        'datasetId':'ds_OSE_Pecas_Originais',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODIGOPRD',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'NOMEFANTASIA',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-6">
+												<label for="DESCRICAOPECAORIGINAL">Descrição:</label>
+												<input type="text" id="DESCRICAOPECAORIGINAL" name="DESCRICAOPECAORIGINAL" value="" class="form-control" readonly="readonly">
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESPECAORIGINAL">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESPECAORIGINAL" name="CODCOMPONENTESPECAORIGINAL" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESPECAORIGINAL"
+												    name="GRUPODECOMPONENTESPECAORIGINAL"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADEPECAORIGINAL">Unidade:</label>
+												<input type="text" id="UNIDADEPECAORIGINAL" name="UNIDADEPECAORIGINAL" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADEPECAORIGINAL">Quantidade:</label>
+												<input type="number" id="QUANTIDADEPECAORIGINAL" name="QUANTIDADEPECAORIGINAL" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_PECAORIGINAL_BOTAO" id="TABELA_PECAORIGINAL_BOTAO" onclick="addLinhaTabela('TABELA_PECAORIGINAL')">Incluir Peça</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary PECAS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Peças Auxliares</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_PECAAUXILIAR" class="table" cellspacing="0" tablename="TABELA_PECAAUXILIAR" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_PECAAUXILIAR')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-6">
+												<label for="CODIGOPECAAUXILIAR">Peça:</label>
+												<input type="hidden" id="IDPRDPECAAUXILIAR" name="IDPRDPECAAUXILIAR" value="">
+												<input type="hidden" id="ULTIMOPRECOPECAAUXILIAR" name="ULTIMOPRECOPECAAUXILIAR" value="">
+												<input
+												    type="zoom"
+												    id = "CODIGOPECAAUXILIAR"
+												    name="CODIGOPECAAUXILIAR"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'CODIGOPRD',
+												        'datasetId':'ds_OSE_Pecas_Auxiliares',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODIGOPRD',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'NOMEFANTASIA',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-6">
+												<label for="DESCRICAOPECAAUXILIAR">Descrição:</label>
+												<input type="text" id="DESCRICAOPECAAUXILIAR" name="DESCRICAOPECAAUXILIAR" value="" class="form-control" readonly="readonly">
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESPECAAUXILIAR">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESPECAAUXILIAR" name="CODCOMPONENTESPECAAUXILIAR" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESPECAAUXILIAR"
+												    name="GRUPODECOMPONENTESPECAAUXILIAR"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADEPECAAUXILIAR">Unidade:</label>
+												<input type="text" id="UNIDADEPECAAUXILIAR" name="UNIDADEPECAAUXILIAR" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADEPECAAUXILIAR">Quantidade:</label>
+												<input type="number" id="QUANTIDADEPECAAUXILIAR" name="QUANTIDADEPECAAUXILIAR" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_PECAAUXILIAR_BOTAO" id="TABELA_PECAAUXILIAR_BOTAO" onclick="addLinhaTabela('TABELA_PECAAUXILIAR')">Incluir Peça</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary PECAS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Pneus</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_PNEUS" class="table" cellspacing="0" tablename="TABELA_PNEUS" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_PNEUS')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-12">
+												<label for="DESCRICAOCOMPLETAPNEUS">Pneus:</label>
+												<input type="hidden" id="IDPRDPNEUS" name="IDPRDPNEUS" value="">
+												<input type="hidden" id="ULTIMOPRECOPNEUS" name="ULTIMOPRECOPNEUS" value="">
+												<input type="hidden" id="CODIGOPNEUS" name="CODIGOPNEUS" value="">
+												<input type="hidden" id="DESCRICAOPNEUS" name="DESCRICAOPNEUS" value="">
+												<input
+												    type="zoom"
+												    id = "DESCRICAOCOMPLETAPNEUS"
+												    name="DESCRICAOCOMPLETAPNEUS"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAOCOMPLETA',
+												        'datasetId':'ds_OSE_Pecas_Pneus',
+												        'placeholder':'Selecione...',
+												        'filterValues':'NOMEFANTASIA',
+												        'fields':[
+												            {
+												            	'field':'DESCRICAOCOMPLETA',
+												            	'label':'Pneu:',
+												                'standard':'true'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESPNEUS">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESPNEUS" name="CODCOMPONENTESPNEUS" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESPNEUS"
+												    name="GRUPODECOMPONENTESPNEUS"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADEPNEUS">Unidade:</label>
+												<input type="text" id="UNIDADEPNEUS" name="UNIDADEPNEUS" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADEPNEUS">Quantidade:</label>
+												<input type="number" id="QUANTIDADEPNEUS" name="QUANTIDADEPNEUS" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_PNEUS_BOTAO" id="TABELA_PNEUS_BOTAO" onclick="addLinhaTabela('TABELA_PNEUS')">Incluir Pneu</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary PECAS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Óleos</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_OLEOS" class="table" cellspacing="0" tablename="TABELA_OLEOS" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_OLEOS')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-1">
+												<label for="DESCRICAOCOMPLETAOLEO">Oleo:</label>
+												<input type="hidden" id="IDPRDOLEO" name="IDPRDOLEO" value="">
+												<input type="hidden" id="ULTIMOPRECOOLEO" name="ULTIMOPRECOOLEO" value="">
+												<input type="hidden" id="CODIGOOLEO" name="CODIGOOLEO" value="">
+												<input type="hidden" id="DESCRICAOOLEO" name="DESCRICAOOLEO" value="">
+												<input
+												    type="zoom"
+												    id = "DESCRICAOCOMPLETAOLEO"
+												    name="DESCRICAOCOMPLETAOLEO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAOCOMPLETA',
+												        'datasetId':'ds_OSE_Pecas_Oleos',
+												        'placeholder':'Selecione...',
+												        'filterValues':'NOMEFANTASIA',
+												        'fields':[
+												            {
+												            	'field':'DESCRICAOCOMPLETA',
+												            	'label':'Oleo:',
+												                'standard':'true'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESOLEO">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESOLEO" name="CODCOMPONENTESOLEO" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESOLEO"
+												    name="GRUPODECOMPONENTESOLEO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADEOLEO">Unidade:</label>
+												<input type="text" id="UNIDADEOLEO" name="UNIDADEOLEO" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADEOLEO">Quantidade:</label>
+												<input type="number" id="QUANTIDADEOLEO" name="QUANTIDADEOLEO" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_OLEOS_BOTAO" id="TABELA_OLEOS_BOTAO" onclick="addLinhaTabela('TABELA_OLEOS')">Incluir Óleo</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+	
+	<!-- ========================================================================================================================== -->
+
+	<div class="panel panel-primary SERVICOS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Serviços Internos</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_SERVICOSINTERNOS" class="table" cellspacing="0" tablename="TABELA_SERVICOSINTERNOS" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_SERVICOSINTERNOS')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-12">
+												<label for="DESCRICAOCOMPLETASERVINTERNO">Serviço:</label>
+												<input type="hidden" id="IDPRDSERVICOINTERNO" name="IDPRDSERVICOINTERNO" value="">
+												<input type="hidden" id="ULTIMOPRECOSERVICOINTERNO" name="ULTIMOPRECOSERVICOINTERNO" value="">
+												<input type="hidden" id="CODIGOSERVICOINTERNO" name="CODIGOSERVICOINTERNO" value="">
+												<input type="hidden" id="DESCRICAOSERVICOINTERNO" name="DESCRICAOSERVICOINTERNO" value="">
+												<input
+												    type="zoom"
+												    id = "DESCRICAOCOMPLETASERVINTERNO"
+												    name="DESCRICAOCOMPLETASERVINTERNO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAOCOMPLETA',
+												        'datasetId':'ds_OSE_Servicos_Internos',
+												        'placeholder':'Selecione...',
+												        'filterValues':'NOMEFANTASIA',
+												        'fields':[
+												            {
+												            	'field':'DESCRICAOCOMPLETA',
+												            	'label':'Serviço:',
+												                'standard':'true'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESSERVINTERNO">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESSERVINTERNO" name="CODCOMPONENTESSERVINTERNO" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESSERVINTERNO"
+												    name="GRUPODECOMPONENTESSERVINTERNO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADESERVICOINTERNO">Unidade:</label>
+												<input type="text" id="UNIDADESERVICOINTERNO" name="UNIDADESERVICOINTERNO" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADESERVICOINTERNO">Quantidade:</label>
+												<input type="number" id="QUANTIDADESERVICOINTERNO" name="QUANTIDADESERVICOINTERNO" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_SERVICOSINTERNOS_BOTAO" id="TABELA_SERVICOSINTERNOS_BOTAO" onclick="addLinhaTabela('TABELA_SERVICOSINTERNOS')">Incluir Serviço</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+
+	<div class="panel panel-primary SERVICOS">
+    <div class="panel-heading">
+        <h3 class="panel-title">Serviços Externos</h3>
+    </div>
+    <div class="panel-body">
+
+		<div class="row">
+		
+			<div class="form-group">
+					<table id="TABELA_SERVICOSEXTERNOS" class="table" cellspacing="0" tablename="TABELA_SERVICOSEXTERNOS" noaddbutton="true" customFnDelete="deleteLinhaTabela(this, 'TABELA_SERVICOSEXTERNOS')">
+						<thead> 
+							<tr class="tableHeadRow">
+								<th class="tableColumn"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="fs-v-align-middle col-md-12 col-sm-12">
+									<div class="form-group">
+										<div class="row">
+										
+											<div class="form-group col-xs-12 col-md-12">
+												<label for="CODIGOSERVICOEXTERNO">Serviço:</label>
+												<input type="hidden" id="IDPRDSERVICOEXTERNO" name="IDPRDSERVICOEXTERNO" value="">
+												<input type="hidden" id="ULTIMOPRECOSERVICOEXTERNO" name="ULTIMOPRECOSERVICOEXTERNO" value="">
+												<input type="hidden" id="CODIGOSERVICOEXTERNO" name="CODIGOSERVICOEXTERNO" value="">
+												<input type="hidden" id="DESCRICAOSERVICOEXTERNO" name="DESCRICAOSERVICOEXTERNO" value="">
+												<input
+												    type="zoom"
+												    id = "DESCRICAOCOMPLETASERVEXTERNO"
+												    name="DESCRICAOCOMPLETASERVEXTERNO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAOCOMPLETA',
+												        'datasetId':'ds_OSE_Servicos_Externos',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'DESCRICAOCOMPLETA',
+												               'label':'Serviço:',
+												              'standard':'true'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+										</div>
+										<div class="row">
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="GRUPODECOMPONENTESSERVEXTERNO">Grupo de Componentes:</label>
+												<input type="hidden" id="CODCOMPONENTESSERVEXTERNO" name="CODCOMPONENTESSERVEXTERNO" value="">
+												<input
+												    type="zoom"
+												    id = "GRUPODECOMPONENTESSERVEXTERNO"
+												    name="GRUPODECOMPONENTESSERVEXTERNO"
+												    class="form-control"
+												    value=""
+												    data-zoom="{
+												        'displayKey':'DESCRICAO',
+												        'datasetId':'ds_OSE_Grupo_Componentes',
+												        'placeholder':'Selecione...',
+												        'fields':[
+												            {
+												               'field':'CODTB2FAT',
+												               'label':'Código',
+												              'standard':'true'
+												            },
+												            {
+												            	'field':'DESCRICAO',
+												            	'label':'Descrição'
+												            }
+												        ]
+												     }"
+												/>
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="UNIDADESERVICOEXTERNO">Unidade:</label>
+												<input type="text" id="UNIDADESERVICOEXTERNO" name="UNIDADESERVICOEXTERNO" value="" class="form-control" readonly="readonly">
+											</div>
+											
+											<div class="form-group col-xs-12 col-md-4">
+												<label for="QUANTIDADESERVICOEXTERNO">Quantidade:</label>
+												<input type="number" id="QUANTIDADESERVICOEXTERNO" name="QUANTIDADESERVICOEXTERNO" value="" min="0" class="form-control">
+											</div>
+											
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					    
+				<button type="button" class="btn btn-primary" name="TABELA_SERVICOSEXTERNOS_BOTAO" id="TABELA_SERVICOSEXTERNOS_BOTAO" onclick="addLinhaTabela('TABELA_SERVICOSEXTERNOS')">Incluir Serviço</button>
+								 	    
+			</div>
+			
+		</div>
+
+    </div>
+	</div>
+	
+</form>
+</div>
+</body>
+</html>
