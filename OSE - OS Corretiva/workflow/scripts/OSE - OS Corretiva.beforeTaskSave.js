@@ -1,6 +1,6 @@
 function beforeTaskSave(colleagueId,nextSequenceId,userList){
 	
-	if (nextSequenceId == 24 || nextSequenceId == 18){
+	if (nextSequenceId == "5" || nextSequenceId == "18"){
 		// Obtém a data e hora atuais
 		var dataAtual = new Date();
 		
@@ -15,7 +15,10 @@ function beforeTaskSave(colleagueId,nextSequenceId,userList){
 		var dataFormatada = dia + '/' + mes + '/' + ano + ' - ' + hora + ':' + minutos;
 
 		console.log(dataFormatada);
-		nextSequenceId == 24 ? hAPI.setCardValue("DATAINICIOOS", dataFormatada) : hAPI.setCardValue("DATATERMINOOS", dataFormatada);
+		nextSequenceId == "5" ? hAPI.setCardValue("DATAINICIOOS", dataFormatada) : hAPI.setCardValue("DATATERMINOOS", dataFormatada);
+		if (nextSequenceId == "18" && hAPI.getCardValue("DATAINICIOOS") == ""){
+			hAPI.setCardValue("DATAINICIOOS", dataFormatada);
+		}
 	}
 	
 	if ((nextSequenceId == 14 || nextSequenceId == 16) && getValue("WKNumState") != "16"){
@@ -30,15 +33,29 @@ function beforeTaskSave(colleagueId,nextSequenceId,userList){
 		validacaoRMRSPendente();
 	}
 	
-	if ((getValue("WKNumState") == "0" || getValue("WKNumState") == "4") && nextSequenceId == 5){
-		criacaoOSCorretiva();
-	}
-	if ((getValue("WKNumState") == "0" || getValue("WKNumState") == "4") && nextSequenceId == 18){
-		criaFinalizaOSCorretiva();
-	}
-	if (getValue("WKNumState") == "16" && nextSequenceId == 18){
-		finalizacaoOSCorretiva();
-	}
+	var login = fluigAPI.getUserService().getCurrent().getLogin();
+	var primeiraLetra = login.substring(0, 1).toUpperCase();
+	var restoDaString = login.slice(1);
+	var codusuario = primeiraLetra + restoDaString;
+	
+	var dataset = DatasetFactory.getDataset("ds_OSE_Valida_Acessos", 
+	        null, 
+	        [DatasetFactory.createConstraint("CODUSUARIO", codusuario, codusuario, ConstraintType.MUST)],
+	        null);
+	var temacesso = true
+	for(var i = 0; i < dataset.rowsCount; i++) {
+        if (dataset.getValue(i, "TEMACESSO") == 'FALSE'){temacesso = false};
+    }
+	
+		if ((getValue("WKNumState") == "0" || getValue("WKNumState") == "4") && nextSequenceId == 5){
+			if (temacesso){criacaoOSCorretiva()} else {throw "\n\nVocê não tem todos os acessos para proseguir com o processo!\n\n"}
+		}
+		if ((getValue("WKNumState") == "0" || getValue("WKNumState") == "4") && nextSequenceId == 18){
+			if (temacesso){criaFinalizaOSCorretiva();} else {throw "\n\nVocê não tem todos os acessos para proseguir com o processo!\n\n"}
+		}
+		if (getValue("WKNumState") == "16" && nextSequenceId == 18){
+			if (temacesso){finalizacaoOSCorretiva();} else {throw "\n\nVocê não tem todos os acessos para proseguir com o processo!\n\n"}
+		}
 	
 }
 
@@ -831,8 +848,8 @@ function validacaoRMRSPendente(){
 
 	try {
 		
-		var c1 = DatasetFactory.createConstraint("IDMOVOS", hAPI.getCardValue('OSNUMEROMOV'),
-			hAPI.getCardValue('OSNUMEROMOV'), ConstraintType.MUST);
+		var c1 = DatasetFactory.createConstraint("IDMOVOS", hAPI.getCardValue('OSIDMOV'),
+			hAPI.getCardValue('OSIDMOV'), ConstraintType.MUST);
 
 		var constraints = new Array(c1);
 		var dataset = DatasetFactory.getDataset('ds_OSE_RMRS_Pendente',null,constraints,null);

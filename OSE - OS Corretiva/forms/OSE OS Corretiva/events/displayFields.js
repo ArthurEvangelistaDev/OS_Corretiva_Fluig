@@ -4,7 +4,7 @@ function displayFields(form,customHTML){
 	form.setHidePrintLink(true);
 	
 	//form.setValue("NUMSTATE", getValue("WKNumState"))
-	customHTML.append('<script>$("#TABELA_MAODEOBRA).prop("noremovebutton", true);</script>');
+	customHTML.append('<script>document.getElementById("TABELA_MAODEOBRA").style.setProperty("nodeletebutton", "true")</script>');
 	if (getValue("WKNumState") != "0" && getValue("WKNumState") != "4" && getValue("WKNumState") != "16"){
 		
 		customHTML.append("<script>$('#TABELA_MAODEOBRA_BOTAO').prop('disabled', true);</script>");
